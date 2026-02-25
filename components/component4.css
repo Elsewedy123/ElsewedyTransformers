@@ -1,0 +1,79 @@
+.outline-button-container {
+  display: flex;
+  position: relative;
+}
+.outline-button-button {
+  color: var(--dl-color-gray-black);
+  padding-top: var(--dl-space-space-unit);
+  border-color: var(--dl-color-primary-100);
+  border-width: 1px;
+  padding-left: var(--dl-space-space-doubleunit);
+  border-radius: 50px;
+  padding-right: var(--dl-space-space-doubleunit);
+  padding-bottom: var(--dl-space-space-unit);
+  background-color: var(--dl-color-gray-white);
+}
+.outline-button-root-class-name {
+  top: 64px;
+  left: 72px;
+  position: static;
+  margin-top: 30px;
+}
+.outline-button-root-class-name1 {
+  margin-top: 0px;
+}
+.outline-button-root-class-name2 {
+  margin-top: -2px;
+}
+.outline-button-root-class-name3 {
+  margin-top: 30px;
+}
+
+.component4-container {
+  width: 300px;
+  display: flex;
+  position: relative;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+.component4-container1 {
+  width: 100%;
+  display: flex;
+  position: relative;
+  align-items: center;
+  flex-direction: column;
+}
+.component4-image {
+  width: 100%;
+  height: 247px;
+  object-fit: cover;
+}
+.component4-container2 {
+  width: 100%;
+  display: flex;
+  padding: var(--dl-space-space-unit);
+  align-items: center;
+  flex-direction: column;
+}
+.component4-text {
+  width: 100%;
+  height: auto;
+  font-size: 20px;
+  align-self: center;
+  font-style: normal;
+  text-align: center;
+  font-weight: 700;
+  padding-bottom: var(--dl-space-space-halfunit);
+  text-transform: capitalize;
+}
+@media(max-width: 767px) {
+  .component4-container {
+    width: 200px;
+  }
+}
+@media(max-width: 479px) {
+  .component4-container {
+    width: 300px;
+  }
+}

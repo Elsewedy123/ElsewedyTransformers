@@ -1,0 +1,27 @@
+.card2-container {
+  width: 307px;
+  height: 295px;
+  display: flex;
+  position: relative;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.card2-image {
+  width: 45%;
+  object-fit: cover;
+}
+.card2-container1 {
+  flex: 0 0 auto;
+  width: auto;
+  height: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.card2-text1 {
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 400;
+}
+

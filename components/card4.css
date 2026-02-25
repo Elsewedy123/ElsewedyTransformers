@@ -1,0 +1,21 @@
+.card4-container {
+  width: 307px;
+  height: 284px;
+  display: flex;
+  position: relative;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.card4-image {
+  width: 45%;
+  object-fit: cover;
+}
+.card4-text1 {
+  font-size: 25px;
+  align-self: center;
+  font-style: normal;
+  text-align: center;
+  font-weight: 400;
+}
+

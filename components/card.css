@@ -1,0 +1,26 @@
+.card-container {
+  width: 307px;
+  height: 295px;
+  display: flex;
+  position: relative;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.card-image {
+  width: 45%;
+  object-fit: cover;
+}
+.card-container1 {
+  flex: 0 0 auto;
+  width: auto;
+  height: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.card-text1 {
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 400;
+}
