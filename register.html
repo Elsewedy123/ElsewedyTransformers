@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Register - Transformers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    /* ─── Reset & Base ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      background: #0a0a0a;
+      color: #f0f0f0;
+      overflow-x: hidden;
+    }
+
+    /* ─── Animated Background ─── */
+    .bg-scene {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: 
+        radial-gradient(ellipse 80% 50% at 20% 80%, rgba(200,10,10,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(180,0,0,0.12) 0%, transparent 55%),
+        linear-gradient(160deg, #0f0505 0%, #0a0a0a 50%, #100202 100%);
+    }
+    .bg-scene::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,30,30,0.03) 60px, rgba(255,30,30,0.03) 61px),
+        repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,30,30,0.03) 60px, rgba(255,30,30,0.03) 61px);
+    }
+    .bg-glow {
+      position: fixed;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(220,20,20,0.1) 0%, transparent 70%);
+      top: -200px; left: -200px;
+      animation: driftGlow 12s ease-in-out infinite alternate;
+      z-index: 0;
+      pointer-events: none;
+    }
+    @keyframes driftGlow {
+      0%   { transform: translate(0,0); }
+      100% { transform: translate(300px, 400px); }
+    }
+
+    /* ─── Navbar ─── */
+    nav {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,40,40,0.15);
+    }
+    .nav-logo {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.05em;
+    }
+    .nav-logo span { color: #e01010; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a {
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+      position: relative;
+      padding-bottom: 2px;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0; right: 100%;
+      height: 2px;
+      background: #e01010;
+      transition: right 0.25s ease;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a:hover::after { right: 0; }
+
+    /* ─── Page Layout ─── */
+    .page {
+      position: relative;
+      z-index: 5;
+      min-height: calc(100vh - 65px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+    }
+
+    /* ─── Card ─── */
+    .card {
+      width: 100%;
+      max-width: 480px;
+      background: rgba(15,5,5,0.8);
+      border: 1px solid rgba(255,40,40,0.2);
+      border-radius: 16px;
+      padding: 48px 44px 40px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 0 60px rgba(200,10,10,0.12), 0 24px 48px rgba(0,0,0,0.5);
+      animation: cardIn 0.55s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(28px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0)   scale(1); }
+    }
+
+    /* ─── Card Header ─── */
+    .card-badge {
+      display: inline-block;
+      background: rgba(220,20,20,0.15);
+      border: 1px solid rgba(220,20,20,0.4);
+      color: #e84040;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .card-title span { color: #e01010; }
+    .card-sub {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 36px;
+    }
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(220,20,20,0.4), transparent);
+      margin-bottom: 32px;
+    }
+
+    /* ─── Field Groups ─── */
+    .field {
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .field label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 8px;
+    }
+    .field-wrap {
+      position: relative;
+    }
+    .field-wrap svg.icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px; height: 18px;
+      color: rgba(255,100,100,0.5);
+      pointer-events: none;
+      transition: color 0.2s;
+    }
+    .field input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      color: #f0f0f0;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      padding: 13px 14px 13px 44px;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    .field input::placeholder { color: rgba(255,255,255,0.22); }
+    .field input:focus {
+      border-color: rgba(220,30,30,0.7);
+      background: rgba(220,30,30,0.06);
+      box-shadow: 0 0 0 3px rgba(220,30,30,0.12);
+    }
+    .field input:focus ~ svg.icon,
+    .field-wrap:focus-within svg.icon { color: #e84040; }
+
+    /* Password toggle */
+    .toggle-pass {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(255,255,255,0.3);
+      padding: 4px;
+      transition: color 0.2s;
+      display: flex; align-items: center;
+    }
+    .toggle-pass:hover { color: rgba(255,255,255,0.7); }
+    .toggle-pass svg { width: 18px; height: 18px; }
+
+    /* ─── Error / Success Messages ─── */
+    .field-msg {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      min-height: 20px;
+      margin: 5px 0 10px 2px;
+      color: transparent;
+      transition: color 0.2s, transform 0.2s;
+      transform: translateY(-4px);
+    }
+    .field-msg.error {
+      color: #ff5555;
+      transform: translateY(0);
+    }
+    .field-msg.success {
+      color: #55cc88;
+      transform: translateY(0);
+    }
+    .field-msg svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+    /* Input error/success state */
+    .field input.is-error  { border-color: rgba(255,60,60,0.7) !important; background: rgba(255,30,30,0.06) !important; }
+    .field input.is-success{ border-color: rgba(60,200,100,0.4) !important; }
+
+    /* ─── Password Strength ─── */
+    .strength-bar {
+      display: flex;
+      gap: 4px;
+      margin: 6px 0 10px;
+    }
+    .strength-bar span {
+      flex: 1;
+      height: 3px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.08);
+      transition: background 0.35s;
+    }
+    .strength-bar span.filled-weak   { background: #ff4444; }
+    .strength-bar span.filled-fair   { background: #ff9922; }
+    .strength-bar span.filled-good   { background: #ffdd44; }
+    .strength-bar span.filled-strong { background: #44cc77; }
+    .strength-label {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 10px;
+      margin-top: -6px;
+      min-height: 16px;
+      transition: color 0.3s;
+    }
+    .strength-label.weak   { color: #ff4444; }
+    .strength-label.fair   { color: #ff9922; }
+    .strength-label.good   { color: #ffdd44; }
+    .strength-label.strong { color: #44cc77; }
+
+    /* ─── Submit Button ─── */
+    .btn-register {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fff;
+      background: linear-gradient(135deg, #cc1010 0%, #e83030 100%);
+      box-shadow: 0 4px 20px rgba(200,20,20,0.35);
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      margin-top: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-register::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.2s;
+    }
+    .btn-register:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(220,20,20,0.45);
+    }
+    .btn-register:hover::after { background: rgba(255,255,255,0.06); }
+    .btn-register:active { transform: translateY(0); }
+    .btn-register:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ─── Footer Link ─── */
+    .card-footer {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.4);
+    }
+    .card-footer a {
+      color: #e84040;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .card-footer a:hover { color: #ff6060; }
+
+    /* ─── Toast ─── */
+    #toast {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: 999;
+      background: rgba(20,5,5,0.95);
+      border: 1px solid rgba(255,40,40,0.3);
+      border-radius: 12px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: #fff;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      transform: translateX(120%);
+      transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+      max-width: 340px;
+    }
+    #toast.show { transform: translateX(0); }
+    #toast .toast-icon { font-size: 1.2rem; }
+    #toast.success-toast { border-color: rgba(60,200,100,0.4); }
+    #toast.error-toast   { border-color: rgba(255,60,60,0.4); }
+
+    /* ─── Footer ─── */
+    footer {
+      position: relative;
+      z-index: 5;
+      background: rgba(5,5,5,0.9);
+      border-top: 1px solid rgba(255,40,40,0.1);
+      padding: 28px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-logo {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.5);
+    }
+    .footer-logo span { color: rgba(220,20,20,0.7); }
+    .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+    .footer-links a {
+      color: rgba(255,255,255,0.35);
+      text-decoration: none;
+      font-size: 0.82rem;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: rgba(255,255,255,0.7); }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 540px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .card { padding: 36px 24px 28px; }
+      .card-title { font-size: 1.7rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-scene"></div>
+  <div class="bg-glow"></div>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="nav-logo">Elsewedy <span>Transformers</span></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="login.html">Login</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="page">
+    <div class="card">
+      <div class="card-badge">New Account</div>
+      <h1 class="card-title">Create <span>Account</span></h1>
+      <p class="card-sub">Join the Elsewedy Transformers portal</p>
+      <div class="divider"></div>
+
+      <form id="registerForm" novalidate>
+
+        <!-- Full Name -->
+        <div class="field">
+          <label for="fullname">Full Name</label>
+          <div class="field-wrap">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
+            <input type="text" id="fullname" name="fullname" placeholder="John Doe" autocomplete="name"/>
+          </div>
+          <div class="field-msg" id="msg-fullname">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            <span id="msg-fullname-text"></span>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="field">
+          <label for="email">Email Address</label>
+          <div class="field-wrap">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/>
+            </svg>
+            <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email"/>
+          </div>
+          <div class="field-msg" id="msg-email">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            <span id="msg-email-text"></span>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="field-wrap">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input type="password" id="password" name="password" placeholder="Min. 8 characters" autocomplete="new-password" oninput="updateStrength()"/>
+            <button type="button" class="toggle-pass" onclick="togglePass('password', this)" tabindex="-1" aria-label="Toggle password">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="eye-icon">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+          <div class="strength-bar">
+            <span id="sb1"></span><span id="sb2"></span><span id="sb3"></span><span id="sb4"></span>
+          </div>
+          <div class="strength-label" id="strength-label"></div>
+          <div class="field-msg" id="msg-password">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            <span id="msg-password-text"></span>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="field">
+          <label for="cpassword">Confirm Password</label>
+          <div class="field-wrap">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <input type="password" id="cpassword" name="cpassword" placeholder="Re-enter password" autocomplete="new-password"/>
+            <button type="button" class="toggle-pass" onclick="togglePass('cpassword', this)" tabindex="-1" aria-label="Toggle confirm password">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="eye-icon">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+          <div class="field-msg" id="msg-cpassword">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            <span id="msg-cpassword-text"></span>
+          </div>
+        </div>
+
+        <button type="button" class="btn-register" onclick="callAll()">Create Account</button>
+      </form>
+
+      <div class="card-footer">
+        Already have an account? <a href="login.html">Sign in</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast -->
+  <div id="toast">
+    <span class="toast-icon" id="toast-icon">✓</span>
+    <span id="toast-msg">Success</span>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo">Elsewedy <span>Transformers</span></div>
+    <div class="footer-links">
+      <a href="#">Investors</a>
+      <a href="#">Careers</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    // ─── Utilities ───
+    function showMsg(id, msg, type) {
+      const wrap = document.getElementById('msg-' + id);
+      const text = document.getElementById('msg-' + id + '-text');
+      const input = document.getElementById(id);
+      text.textContent = msg;
+      wrap.className = 'field-msg ' + (msg ? type : '');
+      input.className = 'field input ' + (msg ? (type === 'error' ? 'is-error' : 'is-success') : '');
+    }
+    function clearMsg(id) { showMsg(id, '', ''); }
+
+    function showToast(msg, type) {
+      const t = document.getElementById('toast');
+      const icon = document.getElementById('toast-icon');
+      document.getElementById('toast-msg').textContent = msg;
+      t.className = 'show ' + (type === 'success' ? 'success-toast' : 'error-toast');
+      icon.textContent = type === 'success' ? '✓' : '✕';
+      setTimeout(() => { t.className = t.className.replace('show', '').trim(); }, 3500);
+    }
+
+    function togglePass(id, btn) {
+      const inp = document.getElementById(id);
+      const isText = inp.type === 'text';
+      inp.type = isText ? 'password' : 'text';
+      btn.querySelector('.eye-icon').style.opacity = isText ? '1' : '0.4';
+    }
+
+    // ─── Password Strength ───
+    function updateStrength() {
+      const val = document.getElementById('password').value;
+      const bars = [document.getElementById('sb1'), document.getElementById('sb2'),
+                    document.getElementById('sb3'), document.getElementById('sb4')];
+      const lbl  = document.getElementById('strength-label');
+      bars.forEach(b => b.className = '');
+
+      if (!val) { lbl.textContent = ''; lbl.className = 'strength-label'; return; }
+
+      let score = 0;
+      if (val.length >= 8)  score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/\d/.test(val))    score++;
+      if (/[!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~`-]/.test(val)) score++;
+
+      const levels = ['', 'weak', 'fair', 'good', 'strong'];
+      const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+      const cls    = ['', 'filled-weak', 'filled-fair', 'filled-good', 'filled-strong'];
+
+      for (let i = 0; i < score; i++) bars[i].className = cls[score];
+      lbl.textContent = labels[score];
+      lbl.className   = 'strength-label ' + levels[score];
+    }
+
+    // ─── Validation Helpers ───
+    function validateFullname() {
+      const val = document.getElementById('fullname').value.trim();
+      if (!val) { showMsg('fullname', 'Full name is required', 'error'); return false; }
+      if (/\d/.test(val)) { showMsg('fullname', 'Name should not contain numbers', 'error'); return false; }
+      if (val.split(' ').filter(w=>w).length < 2) { showMsg('fullname', 'Please enter first and last name', 'error'); return false; }
+      showMsg('fullname', 'Looks good', 'success'); return true;
+    }
+    function validateEmail() {
+      const val = document.getElementById('email').value.trim();
+      const re  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!val) { showMsg('email', 'Email is required', 'error'); return false; }
+      if (!re.test(val)) { showMsg('email', 'Please enter a valid email address', 'error'); return false; }
+      showMsg('email', 'Valid email', 'success'); return true;
+    }
+    function validatePassword() {
+      const val = document.getElementById('password').value;
+      if (!val) { showMsg('password', 'Password is required', 'error'); return false; }
+      if (val.length < 8) { showMsg('password', 'Password must be at least 8 characters', 'error'); return false; }
+      if (!/[A-Z]/.test(val)) { showMsg('password', 'Add at least one uppercase letter', 'error'); return false; }
+      if (!/[a-z]/.test(val)) { showMsg('password', 'Add at least one lowercase letter', 'error'); return false; }
+      if (!/\d/.test(val)) { showMsg('password', 'Add at least one number', 'error'); return false; }
+      if (!/[!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~`-]/.test(val)) { showMsg('password', 'Add at least one special character', 'error'); return false; }
+      showMsg('password', 'Strong password', 'success'); return true;
+    }
+    function validateCPassword() {
+      const pass  = document.getElementById('password').value;
+      const cpass = document.getElementById('cpassword').value;
+      if (!cpass) { showMsg('cpassword', 'Please confirm your password', 'error'); return false; }
+      if (pass !== cpass) { showMsg('cpassword', 'Passwords do not match', 'error'); return false; }
+      showMsg('cpassword', 'Passwords match', 'success'); return true;
+    }
+
+    // Live validation on blur
+    document.getElementById('fullname').addEventListener('blur', validateFullname);
+    document.getElementById('email').addEventListener('blur', validateEmail);
+    document.getElementById('password').addEventListener('blur', validatePassword);
+    document.getElementById('cpassword').addEventListener('blur', validateCPassword);
+    document.getElementById('cpassword').addEventListener('input', validateCPassword);
+
+    // ─── Storage helpers ───
+    function getUsers()   { return JSON.parse(localStorage.getItem('users') || '[]'); }
+    function getUserID()  { return parseInt(localStorage.getItem('id') || '0'); }
+
+    // ─── Main Submit ───
+    function callAll() {
+      const ok1 = validateFullname();
+      const ok2 = validateEmail();
+      const ok3 = validatePassword();
+      const ok4 = validateCPassword();
+
+      if (!ok1 || !ok2 || !ok3 || !ok4) {
+        showToast('Please fix the errors above', 'error');
+        return;
+      }
+
+      // Check duplicate email
+      const users = getUsers();
+      const email = document.getElementById('email').value.trim();
+      if (users.some(u => u.uEmail === email)) {
+        showMsg('email', 'This email is already registered', 'error');
+        showToast('Email already in use', 'error');
+        return;
+      }
+
+      // Create user
+      const id   = getUserID() + 1;
+      const user = {
+        uID      : id,
+        uName    : document.getElementById('fullname').value.trim(),
+        uEmail   : email,
+        uPassword: document.getElementById('password').value
+      };
+      users.push(user);
+      localStorage.setItem('users', JSON.stringify(users));
+      localStorage.setItem('id', id);
+
+      const btn = document.querySelector('.btn-register');
+      btn.textContent = '✓ Account Created!';
+      btn.disabled = true;
+
+      showToast('Account created successfully! Redirecting…', 'success');
+      setTimeout(() => { window.location.href = 'login.html'; }, 2000);
+    }
+  </script>
+</body>
+</html>

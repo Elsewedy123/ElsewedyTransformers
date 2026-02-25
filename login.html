@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Login - Transformers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      background: #0a0a0a;
+      color: #f0f0f0;
+      overflow-x: hidden;
+    }
+
+    /* ─── Background ─── */
+    .bg-scene {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 80%, rgba(200,10,10,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(180,0,0,0.12) 0%, transparent 55%),
+        linear-gradient(160deg, #0f0505 0%, #0a0a0a 50%, #100202 100%);
+    }
+    .bg-scene::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,30,30,0.03) 60px, rgba(255,30,30,0.03) 61px),
+        repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,30,30,0.03) 60px, rgba(255,30,30,0.03) 61px);
+    }
+    .bg-glow {
+      position: fixed; width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(220,20,20,0.1) 0%, transparent 70%);
+      top: -200px; left: -200px;
+      animation: driftGlow 12s ease-in-out infinite alternate;
+      z-index: 0; pointer-events: none;
+    }
+    @keyframes driftGlow {
+      0%   { transform: translate(0,0); }
+      100% { transform: translate(300px, 400px); }
+    }
+
+    /* ─── Navbar ─── */
+    nav {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 40px;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,40,40,0.15);
+    }
+    .nav-logo { font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 700; color: #fff; letter-spacing: 0.05em; }
+    .nav-logo span { color: #e01010; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a {
+      color: rgba(255,255,255,0.65); text-decoration: none; font-size: 0.9rem; font-weight: 500;
+      letter-spacing: 0.04em; transition: color 0.2s; position: relative; padding-bottom: 2px;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -2px; left: 0; right: 100%;
+      height: 2px; background: #e01010; transition: right 0.25s ease;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a:hover::after { right: 0; }
+
+    /* ─── Layout ─── */
+    .page {
+      position: relative; z-index: 5; min-height: calc(100vh - 65px);
+      display: flex; align-items: center; justify-content: center; padding: 60px 20px;
+    }
+
+    /* ─── Card ─── */
+    .card {
+      width: 100%; max-width: 440px;
+      background: rgba(15,5,5,0.8);
+      border: 1px solid rgba(255,40,40,0.2);
+      border-radius: 16px; padding: 48px 44px 40px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 0 60px rgba(200,10,10,0.12), 0 24px 48px rgba(0,0,0,0.5);
+      animation: cardIn 0.55s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(28px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .card-badge {
+      display: inline-block;
+      background: rgba(220,20,20,0.15); border: 1px solid rgba(220,20,20,0.4);
+      color: #e84040; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 4px 12px; border-radius: 100px; margin-bottom: 16px;
+    }
+    .card-title {
+      font-family: 'Rajdhani', sans-serif; font-size: 2rem; font-weight: 700;
+      color: #fff; line-height: 1.1; margin-bottom: 6px;
+    }
+    .card-title span { color: #e01010; }
+    .card-sub { font-size: 0.88rem; color: rgba(255,255,255,0.45); margin-bottom: 36px; }
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(220,20,20,0.4), transparent);
+      margin-bottom: 32px;
+    }
+
+    /* ─── Fields ─── */
+    .field { margin-bottom: 8px; position: relative; }
+    .field label {
+      display: block; font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); margin-bottom: 8px;
+    }
+    .field-wrap { position: relative; }
+    .field-wrap svg.icon {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      width: 18px; height: 18px; color: rgba(255,100,100,0.5);
+      pointer-events: none; transition: color 0.2s;
+    }
+    .field-wrap:focus-within svg.icon { color: #e84040; }
+    .field input {
+      width: 100%; background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255,255,255,0.1); border-radius: 10px;
+      color: #f0f0f0; font-family: 'Outfit', sans-serif; font-size: 0.95rem;
+      padding: 13px 14px 13px 44px;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      outline: none; -webkit-appearance: none;
+    }
+    .field input::placeholder { color: rgba(255,255,255,0.22); }
+    .field input:focus {
+      border-color: rgba(220,30,30,0.7);
+      background: rgba(220,30,30,0.06);
+      box-shadow: 0 0 0 3px rgba(220,30,30,0.12);
+    }
+    .field input.is-error  { border-color: rgba(255,60,60,0.7) !important; background: rgba(255,30,30,0.06) !important; }
+    .field input.is-success{ border-color: rgba(60,200,100,0.4) !important; }
+
+    /* Password toggle */
+    .toggle-pass {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      color: rgba(255,255,255,0.3); padding: 4px; transition: color 0.2s;
+      display: flex; align-items: center;
+    }
+    .toggle-pass:hover { color: rgba(255,255,255,0.7); }
+    .toggle-pass svg { width: 18px; height: 18px; }
+
+    /* Error/success messages */
+    .field-msg {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.78rem; font-weight: 500; min-height: 20px;
+      margin: 5px 0 10px 2px; color: transparent;
+      transition: color 0.2s, transform 0.2s; transform: translateY(-4px);
+    }
+    .field-msg.error  { color: #ff5555; transform: translateY(0); }
+    .field-msg.success{ color: #55cc88; transform: translateY(0); }
+    .field-msg svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+    /* ─── Button ─── */
+    .btn-login {
+      width: 100%; padding: 14px; border-radius: 10px; border: none; cursor: pointer;
+      font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase; color: #fff;
+      background: linear-gradient(135deg, #cc1010 0%, #e83030 100%);
+      box-shadow: 0 4px 20px rgba(200,20,20,0.35);
+      transition: transform 0.15s, box-shadow 0.15s; margin-top: 8px;
+      position: relative; overflow: hidden;
+    }
+    .btn-login::after { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0); transition: background 0.2s; }
+    .btn-login:hover  { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(220,20,20,0.45); }
+    .btn-login:hover::after { background: rgba(255,255,255,0.06); }
+    .btn-login:active { transform: translateY(0); }
+    .btn-login:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .card-footer { text-align: center; margin-top: 22px; font-size: 0.88rem; color: rgba(255,255,255,0.4); }
+    .card-footer a { color: #e84040; font-weight: 600; text-decoration: none; transition: color 0.2s; }
+    .card-footer a:hover { color: #ff6060; }
+
+    /* ─── Toast ─── */
+    #toast {
+      position: fixed; bottom: 32px; right: 32px; z-index: 999;
+      background: rgba(20,5,5,0.95); border: 1px solid rgba(255,40,40,0.3);
+      border-radius: 12px; padding: 14px 20px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.9rem; color: #fff;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      transform: translateX(120%); transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+      max-width: 340px;
+    }
+    #toast.show { transform: translateX(0); }
+    #toast.success-toast { border-color: rgba(60,200,100,0.4); }
+    #toast.error-toast   { border-color: rgba(255,60,60,0.4); }
+
+    /* ─── Footer ─── */
+    footer {
+      position: relative; z-index: 5;
+      background: rgba(5,5,5,0.9); border-top: 1px solid rgba(255,40,40,0.1);
+      padding: 28px 40px; display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: rgba(255,255,255,0.5); }
+    .footer-logo span { color: rgba(220,20,20,0.7); }
+    .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+    .footer-links a { color: rgba(255,255,255,0.35); text-decoration: none; font-size: 0.82rem; transition: color 0.2s; }
+    .footer-links a:hover { color: rgba(255,255,255,0.7); }
+
+    @media (max-width: 540px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .card { padding: 36px 24px 28px; }
+      .card-title { font-size: 1.7rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-scene"></div>
+  <div class="bg-glow"></div>
+
+  <nav>
+    <div class="nav-logo">Elsewedy <span>Transformers</span></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="register.html">Register</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </nav>
+
+  <main class="page">
+    <div class="card">
+      <div class="card-badge">Portal Access</div>
+      <h1 class="card-title">Welcome <span>Back</span></h1>
+      <p class="card-sub">Sign in to your Elsewedy Transformers account</p>
+      <div class="divider"></div>
+
+      <form id="loginForm" novalidate>
+
+        <!-- Email -->
+        <div class="field">
+          <label for="loginEmail">Email Address</label>
+          <div class="field-wrap">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/>
+            </svg>
+            <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email"/>
+          </div>
+          <div class="field-msg" id="msg-loginEmail">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            <span id="msg-loginEmail-text"></span>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <div class="field-wrap">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input type="password" id="loginPassword" placeholder="Your password" autocomplete="current-password"/>
+            <button type="button" class="toggle-pass" onclick="togglePass('loginPassword', this)" tabindex="-1" aria-label="Toggle password">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="eye-icon">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+          <div class="field-msg" id="msg-loginPassword">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            <span id="msg-loginPassword-text"></span>
+          </div>
+        </div>
+
+        <button type="button" class="btn-login" id="log" onclick="logIn()">Sign In</button>
+      </form>
+
+      <div class="card-footer">
+        Don't have an account? <a href="register.html">Create one</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast -->
+  <div id="toast">
+    <span id="toast-icon">✓</span>
+    <span id="toast-msg">Success</span>
+  </div>
+
+  <footer>
+    <div class="footer-logo">Elsewedy <span>Transformers</span></div>
+    <div class="footer-links">
+      <a href="#">Investors</a>
+      <a href="#">Careers</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    /* ── UI helpers ── */
+    function showMsg(id, msg, type) {
+      const wrap  = document.getElementById('msg-' + id);
+      const text  = document.getElementById('msg-' + id + '-text');
+      const input = document.getElementById(id);
+      if (!wrap || !text || !input) return;
+      text.textContent  = msg;
+      wrap.className    = 'field-msg ' + (msg ? type : '');
+      input.className   = 'field input ' + (msg ? (type === 'error' ? 'is-error' : 'is-success') : '');
+    }
+
+    function showToast(msg, type) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent  = msg;
+      document.getElementById('toast-icon').textContent = type === 'success' ? '✓' : '✕';
+      t.className = 'show ' + (type === 'success' ? 'success-toast' : 'error-toast');
+      setTimeout(() => { t.className = t.className.replace('show', '').trim(); }, 3500);
+    }
+
+    function togglePass(id, btn) {
+      const inp = document.getElementById(id);
+      inp.type = inp.type === 'text' ? 'password' : 'text';
+      btn.querySelector('.eye-icon').style.opacity = inp.type === 'text' ? '0.4' : '1';
+    }
+
+    /* ── Live blur validation ── */
+    document.getElementById('loginEmail').addEventListener('blur', function() {
+      const v = this.value.trim();
+      if (!v) showMsg('loginEmail', 'Email is required', 'error');
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) showMsg('loginEmail', 'Enter a valid email address', 'error');
+      else showMsg('loginEmail', '', '');
+    });
+    document.getElementById('loginPassword').addEventListener('blur', function() {
+      if (!this.value) showMsg('loginPassword', 'Password is required', 'error');
+      else showMsg('loginPassword', '', '');
+    });
+
+    /* ── Login logic ── */
+    function logIn() {
+      const emailEl = document.getElementById('loginEmail');
+      const passEl  = document.getElementById('loginPassword');
+      const email   = emailEl.value.trim();
+      const pass    = passEl.value;
+      let valid = true;
+
+      if (!email) {
+        showMsg('loginEmail', 'Email is required', 'error'); valid = false;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showMsg('loginEmail', 'Enter a valid email address', 'error'); valid = false;
+      }
+      if (!pass) {
+        showMsg('loginPassword', 'Password is required', 'error'); valid = false;
+      }
+      if (!valid) { showToast('Please fix the errors above', 'error'); return; }
+
+      const stored = localStorage.getItem('users');
+      if (!stored) {
+        showMsg('loginEmail', 'No accounts found — please register first', 'error');
+        showToast('No accounts found', 'error');
+        return;
+      }
+
+      const users = JSON.parse(stored);
+      const found = users.find(u => u.uEmail === email && u.uPassword === pass);
+
+      if (found) {
+        localStorage.setItem('logInuser',     found.uID);
+        localStorage.setItem('logInuserName', found.uName);
+
+        const btn = document.getElementById('log');
+        btn.textContent = '✓ Welcome back!';
+        btn.disabled = true;
+        showMsg('loginEmail',    '', '');
+        showMsg('loginPassword', '', '');
+        showToast('Welcome back, ' + found.uName + '!', 'success');
+        setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+      } else {
+        showMsg('loginEmail',    'Invalid email or password', 'error');
+        showMsg('loginPassword', 'Invalid email or password', 'error');
+        showToast('Login failed — check your credentials', 'error');
+        passEl.value = '';
+      }
+    }
+
+    /* Allow Enter key to submit */
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') logIn();
+    });
+  </script>
+</body>
+</html>

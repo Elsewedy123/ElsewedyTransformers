@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Package Substation - Elsewedy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Outfit', sans-serif; background: #0a0a0a; color: #f0f0f0; overflow-x: hidden; }
+
+    /* ── Navbar ── */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 16px 48px; background: rgba(8,8,8,0.92); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,40,40,0.12); transition: padding 0.3s; }
+    nav.scrolled { padding: 11px 48px; }
+    .nav-logo { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: #fff; text-decoration: none; }
+    .nav-logo span { color: #e01010; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: color 0.2s; position: relative; padding-bottom: 3px; }
+    .nav-links a::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 100%; height: 2px; background: #e01010; transition: right 0.25s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a:hover::after { right: 0; }
+    .user-chip { display: none; align-items: center; gap: 8px; background: rgba(220,20,20,0.12); border: 1px solid rgba(220,20,20,0.3); border-radius: 100px; padding: 6px 14px 6px 10px; font-size: 0.82rem; color: rgba(255,255,255,0.75); cursor: pointer; transition: background 0.2s; }
+    .user-chip:hover { background: rgba(220,20,20,0.25); color: #fff; }
+    .user-chip svg { width: 15px; height: 15px; }
+    .btn-nav { background: linear-gradient(135deg, #bb0d0d, #e02020); color: #fff; border: none; border-radius: 8px; padding: 9px 22px; font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 3px 14px rgba(200,20,20,0.3); }
+    .btn-nav:hover { transform: translateY(-1px); }
+    .burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .burger span { display: block; width: 22px; height: 2px; background: #fff; border-radius: 2px; }
+
+    /* ── Hero ── */
+    .hero { position: relative; min-height: 540px; background: linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.42) 55%, rgba(10,10,10,1) 100%), url('public/package-substation-1500w.png') center/cover no-repeat; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 48px 68px; }
+    .breadcrumb { font-size: 0.75rem; color: rgba(255,255,255,0.35); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+    .breadcrumb a { color: #e84040; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; opacity: 0.4; }
+    .hero-eyebrow { display: inline-block; background: rgba(220,20,20,0.12); border: 1px solid rgba(220,20,20,0.35); color: #e84040; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; margin-bottom: 18px; }
+    .hero-title { font-family: 'Rajdhani', sans-serif; font-size: clamp(2.6rem, 5.5vw, 4.2rem); font-weight: 700; color: #fff; line-height: 0.95; margin-bottom: 18px; }
+    .hero-title span { color: #e01010; display: block; }
+    .hero-sub { max-width: 560px; font-size: 1rem; color: rgba(255,255,255,0.52); line-height: 1.7; }
+
+    /* ── Page ── */
+    .page { max-width: 1120px; margin: 0 auto; padding: 80px 48px 0; }
+    .section { margin-bottom: 80px; }
+    .section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #e84040; margin-bottom: 10px; }
+    .section-title { font-family: 'Rajdhani', sans-serif; font-size: 1.9rem; font-weight: 700; color: #fff; line-height: 1.05; margin-bottom: 8px; }
+    .section-title span { color: #e01010; }
+    .divider { height: 1px; background: linear-gradient(90deg, rgba(220,20,20,0.45), transparent); margin: 20px 0 28px; }
+    .body-text { font-size: 0.97rem; color: rgba(255,255,255,0.62); line-height: 1.85; }
+    .body-text strong { color: #fff; }
+    .body-text + .body-text { margin-top: 14px; }
+
+    /* ── Types grid ── */
+    .types-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; margin-top: 4px; }
+    .type-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 24px; transition: border-color 0.25s, background 0.25s, transform 0.25s; }
+    .type-card:hover { border-color: rgba(220,20,20,0.38); background: rgba(220,20,20,0.05); transform: translateY(-3px); }
+    .type-num { font-family: 'Rajdhani', sans-serif; font-size: 2rem; font-weight: 700; color: rgba(220,20,20,0.3); line-height: 1; margin-bottom: 8px; }
+    .type-title { font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .type-desc { font-size: 0.84rem; color: rgba(255,255,255,0.48); line-height: 1.65; }
+
+    /* ── Applications ── */
+    .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+    .app-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 22px; display: flex; align-items: flex-start; gap: 14px; transition: border-color 0.25s, background 0.25s, transform 0.25s; }
+    .app-card:hover { border-color: rgba(220,20,20,0.35); background: rgba(220,20,20,0.05); transform: translateY(-3px); }
+    .app-icon { width: 40px; height: 40px; background: rgba(220,20,20,0.12); border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .app-icon svg { width: 18px; height: 18px; color: #e84040; }
+    .app-body h4 { font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .app-body p { font-size: 0.82rem; color: rgba(255,255,255,0.42); line-height: 1.6; }
+
+    /* ── Features list ── */
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 12px; }
+    .feature-row { display: flex; align-items: flex-start; gap: 12px; padding: 14px 18px; background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.06); border-radius: 9px; transition: background 0.2s, border-color 0.2s; }
+    .feature-row:hover { background: rgba(220,20,20,0.05); border-color: rgba(220,20,20,0.2); }
+    .feature-dot { width: 6px; height: 6px; background: #e01010; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+    .feature-text { font-size: 0.88rem; color: rgba(255,255,255,0.62); line-height: 1.55; }
+
+    /* ── CTA banner ── */
+    .cta-banner { background: linear-gradient(135deg, rgba(190,12,12,0.18) 0%, rgba(110,5,5,0.08) 100%); border: 1px solid rgba(220,20,20,0.22); border-radius: 16px; padding: 44px 52px; display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap; margin-bottom: 88px; }
+    .cta-text h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.65rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .cta-text p { font-size: 0.9rem; color: rgba(255,255,255,0.45); }
+    .btn-cta { display: inline-flex; align-items: center; gap: 9px; background: linear-gradient(135deg, #cc1010, #e83030); color: #fff; border: none; border-radius: 10px; padding: 14px 34px; font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; text-decoration: none; box-shadow: 0 6px 24px rgba(200,20,20,0.32); transition: transform 0.15s, box-shadow 0.15s; }
+    .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(200,20,20,0.44); }
+    .btn-cta svg { width: 15px; height: 15px; }
+
+    /* ── Footer ── */
+    footer { background: #060606; border-top: 1px solid rgba(255,40,40,0.1); padding: 52px 48px 28px; }
+    .footer-top { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 36px; padding-bottom: 36px; border-bottom: 1px solid rgba(255,255,255,0.055); margin-bottom: 26px; }
+    .footer-brand-logo { font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 14px; }
+    .footer-brand-logo span { color: #e01010; }
+    .footer-brand img { width: 144px; opacity: 0.5; filter: brightness(0) invert(1); }
+    .footer-cols { display: flex; gap: 52px; flex-wrap: wrap; }
+    .footer-col h4 { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-bottom: 14px; }
+    .footer-col a { display: block; color: rgba(255,255,255,0.44); text-decoration: none; font-size: 0.86rem; margin-bottom: 9px; transition: color 0.2s; }
+    .footer-col a:hover { color: #fff; }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+    .footer-copy { font-size: 0.75rem; color: rgba(255,255,255,0.2); }
+    .footer-socials { display: flex; gap: 16px; }
+    .footer-socials a { color: rgba(255,255,255,0.28); transition: color 0.2s; display: flex; }
+    .footer-socials a:hover { color: #e84040; }
+    .footer-socials svg { width: 18px; height: 18px; }
+
+    @media (max-width: 768px) {
+      nav { padding: 14px 20px; } nav.scrolled { padding: 10px 20px; }
+      .nav-links { display: none; } .burger { display: flex; }
+      .hero { padding: 0 24px 52px; min-height: 440px; }
+      .page { padding: 52px 24px 0; }
+      .cta-banner { padding: 30px 26px; }
+      footer { padding: 36px 24px 22px; } .footer-top { flex-direction: column; }
+    }
+  </style>
+</head>
+<body onload="initPage()">
+
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">Elsewedy <span>Transformers</span></a>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#products">Products</a>
+      <a href="contact.html">Contact</a>
+      <div class="user-chip" id="user-chip" onclick="logout()" onmouseover="checkHover(true)" onmouseout="checkHover(false)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <span id="fullname"></span>
+      </div>
+      <a href="login.html" class="btn-nav" id="login-btn-nav">Sign In</a>
+    </div>
+    <div class="burger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span><a href="index.html#products">Products</a><span>/</span>Package Substation</div>
+    <div class="hero-eyebrow">Compact · Factory-Ready · Safe</div>
+    <h1 class="hero-title">Package<br><span>Substation</span></h1>
+    <p class="hero-sub">The preferred solution where space, aesthetics, and safety are concerns — a complete MV/LV system delivered as a single, type-tested unit.</p>
+  </div>
+
+  <div class="page">
+
+    <!-- Overview -->
+    <div class="section">
+      <div class="section-label">Overview</div>
+      <h2 class="section-title">All-in-One <span>Substation Solution</span></h2>
+      <div class="divider"></div>
+      <p class="body-text">Package substations are the most preferred solutions nowadays, as there are concerns regarding <strong>space, aesthetics, and safety</strong>. ELSEWEDY ELECTRIC Package Substation is a compact enclosure consisting of MV switchgear, a transformer, and an LV switchboard located in three separate compartments, segregated by partitions to ensure personnel safety.</p>
+      <p class="body-text" style="margin-top:14px">Accessibility to operate or maintain the equipment is through lockable doors for each compartment to maximize security. <strong>Assembly of the complete substation is factory-ready</strong> to minimize site installation time and cost. All equipment is of high quality and tested as a complete unit. Substations are tailored to individual customer requirements with one compartment each for the MV switchgear, distribution transformer, and LV switchboard.</p>
+    </div>
+
+    <!-- Types -->
+    <div class="section">
+      <div class="section-label">Configuration</div>
+      <h2 class="section-title">Available <span>Types</span></h2>
+      <div class="divider"></div>
+      <div class="types-grid">
+        <div class="type-card">
+          <div class="type-num">01</div>
+          <div class="type-title">Distribution Substation</div>
+          <div class="type-desc">Up to 36 kV, 3 MVA — ideal for urban distribution networks and commercial developments.</div>
+        </div>
+        <div class="type-card">
+          <div class="type-num">02</div>
+          <div class="type-title">Primary Substation</div>
+          <div class="type-desc">33/11 kV, 20 MVA — designed for primary distribution with high power capacity requirements.</div>
+        </div>
+        <div class="type-card">
+          <div class="type-num">03</div>
+          <div class="type-title">MV Switchgear Compartment</div>
+          <div class="type-desc">Freestanding SF6 RMU, available in both extensible and non-extensible configurations.</div>
+        </div>
+        <div class="type-card">
+          <div class="type-num">04</div>
+          <div class="type-title">Transformer Compartment</div>
+          <div class="type-desc">200 kVA to 3 MVA up to 36 kV — accommodates both oil-insulated and dry-type transformers.</div>
+        </div>
+        <div class="type-card">
+          <div class="type-num">05</div>
+          <div class="type-title">Low Voltage Compartment</div>
+          <div class="type-desc">ACB, MCCB, or feeder pillar configurations — up to 5000 A for any LV distribution need.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Applications -->
+    <div class="section">
+      <div class="section-label">Use Cases</div>
+      <h2 class="section-title">Key <span>Applications</span></h2>
+      <div class="divider"></div>
+      <div class="app-grid">
+        <div class="app-card">
+          <div class="app-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+          <div class="app-body"><h4>Renewables &amp; Distributed Generation</h4><p>Robust design suited for harsh environments with flexible layouts for solar, wind, and distributed energy applications.</p></div>
+        </div>
+        <div class="app-card">
+          <div class="app-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+          <div class="app-body"><h4>Industry</h4><p>Reliable supply, improved operation efficiency, and enhanced power quality for industrial facilities of all scales.</p></div>
+        </div>
+        <div class="app-card">
+          <div class="app-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <div class="app-body"><h4>Utility Networks</h4><p>Enables stable and sustainable power supply through radial and ring connections with remote monitoring and switching for full selectivity.</p></div>
+        </div>
+        <div class="app-card">
+          <div class="app-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+          <div class="app-body"><h4>Infrastructure</h4><p>Evolves with growing demand for safe and reliable electricity in airports, hospitals, data centers, and public infrastructure.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="section">
+      <div class="section-label">Design Excellence</div>
+      <h2 class="section-title">Key <span>Features</span></h2>
+      <div class="divider"></div>
+      <div class="features-grid">
+        <div class="feature-row"><div class="feature-dot"></div><div class="feature-text">High level of safety for both equipment and personnel with zero access to live parts</div></div>
+        <div class="feature-row"><div class="feature-dot"></div><div class="feature-text">All equipment inside is type tested as per relevant IEC and international standards</div></div>
+        <div class="feature-row"><div class="feature-dot"></div><div class="feature-text">Can be lifted with the transformer fully installed — reducing site handling time</div></div>
+        <div class="feature-row"><div class="feature-dot"></div><div class="feature-text">Designed with natural cooling and optimized smooth airflow for thermal efficiency</div></div>
+        <div class="feature-row"><div class="feature-dot"></div><div class="feature-text">Locking system on all doors prevents unauthorized access to all compartments</div></div>
+        <div class="feature-row"><div class="feature-dot"></div><div class="feature-text">Stainless steel hinges for excellent corrosion resistance in outdoor environments</div></div>
+        <div class="feature-row"><div class="feature-dot"></div><div class="feature-text">Compartmented enclosure — all operation activities performed safely from outside</div></div>
+        <div class="feature-row"><div class="feature-dot"></div><div class="feature-text">Factory-assembled and tested as a complete unit to minimize on-site installation time</div></div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-banner">
+      <div class="cta-text">
+        <h3>Ready to discuss your project?</h3>
+        <p>Our team can design a Package Substation tailored to your exact site and load requirements.</p>
+      </div>
+      <a href="contact.html" id="contact-button" class="btn-cta">
+        Contact Us
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+    </div>
+
+  </div><!-- /page -->
+
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-brand-logo">Elsewedy <span>Transformers</span></div>
+        <img src="https://www.elsewedyelectric.com/img/white-logo.png" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">Investors</a><a href="#">Careers</a><a href="#">Data Privacy</a><a href="#">Cookies Policy</a>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <a href="#">About Us</a><a href="#">FAQ</a><a href="#">Terms &amp; Conditions</a><a href="contact.html">Contact</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2024 Elsewedy Transformers. All rights reserved.</div>
+      <div class="footer-socials">
+        <a href="https://instagram.com" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+        <a href="https://facebook.com" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+        <a href="https://twitter.com" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l16 16M4 20 20 4"/></svg></a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function initPage(){const n=localStorage.getItem('logInuserName');const c=document.getElementById('user-chip');const b=document.getElementById('login-btn-nav');const e=document.getElementById('fullname');if(n){c.style.display='flex';b.style.display='none';e.textContent=n;}else{c.style.display='none';b.style.display='inline-flex';}}
+    function changeName(){initPage();}
+    function checkHover(h){const e=document.getElementById('fullname');if(e)e.textContent=h?'Logout':(localStorage.getItem('logInuserName')||'');}
+    function logout(){localStorage.removeItem('logInuser');localStorage.removeItem('logInuserName');window.location.href='login.html';}
+    window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>40));
+    function toggleMobileMenu(){const l=document.getElementById('nav-links');const o=l.style.display==='flex';l.style.cssText=o?'':'display:flex;flex-direction:column;position:fixed;top:54px;left:0;right:0;background:rgba(8,8,8,0.98);padding:24px;gap:20px;border-bottom:1px solid rgba(255,40,40,0.15);z-index:99;backdrop-filter:blur(16px)';}
+  </script>
+</body>
+</html>

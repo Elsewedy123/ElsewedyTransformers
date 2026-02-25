@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Power Transformers - Elsewedy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Outfit', sans-serif; background: #0a0a0a; color: #f0f0f0; overflow-x: hidden; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 16px 48px; background: rgba(8,8,8,0.92); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,40,40,0.12); transition: padding 0.3s; }
+    nav.scrolled { padding: 11px 48px; }
+    .nav-logo { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: #fff; text-decoration: none; }
+    .nav-logo span { color: #e01010; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: color 0.2s; position: relative; padding-bottom: 3px; }
+    .nav-links a::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 100%; height: 2px; background: #e01010; transition: right 0.25s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a:hover::after { right: 0; }
+    .user-chip { display: none; align-items: center; gap: 8px; background: rgba(220,20,20,0.12); border: 1px solid rgba(220,20,20,0.3); border-radius: 100px; padding: 6px 14px 6px 10px; font-size: 0.82rem; color: rgba(255,255,255,0.75); cursor: pointer; transition: background 0.2s; }
+    .user-chip:hover { background: rgba(220,20,20,0.25); color: #fff; }
+    .user-chip svg { width: 15px; height: 15px; }
+    .btn-nav { background: linear-gradient(135deg, #bb0d0d, #e02020); color: #fff; border: none; border-radius: 8px; padding: 9px 22px; font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 3px 14px rgba(200,20,20,0.3); }
+    .btn-nav:hover { transform: translateY(-1px); }
+    .burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .burger span { display: block; width: 22px; height: 2px; background: #fff; border-radius: 2px; }
+
+    .hero { position: relative; min-height: 540px; background: linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.42) 55%, rgba(10,10,10,1) 100%), url('public/power-1500w.png') center/cover no-repeat; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 48px 68px; }
+    .breadcrumb { font-size: 0.75rem; color: rgba(255,255,255,0.35); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+    .breadcrumb a { color: #e84040; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; opacity: 0.4; }
+    .hero-eyebrow { display: inline-block; background: rgba(220,20,20,0.12); border: 1px solid rgba(220,20,20,0.35); color: #e84040; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; margin-bottom: 18px; }
+    .hero-title { font-family: 'Rajdhani', sans-serif; font-size: clamp(2.6rem, 5.5vw, 4.2rem); font-weight: 700; color: #fff; line-height: 0.95; margin-bottom: 18px; }
+    .hero-title span { color: #e01010; display: block; }
+    .hero-sub { max-width: 560px; font-size: 1rem; color: rgba(255,255,255,0.52); line-height: 1.7; }
+
+    .page { max-width: 1120px; margin: 0 auto; padding: 80px 48px 0; }
+    .section { margin-bottom: 80px; }
+    .section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #e84040; margin-bottom: 10px; }
+    .section-title { font-family: 'Rajdhani', sans-serif; font-size: 1.9rem; font-weight: 700; color: #fff; line-height: 1.05; margin-bottom: 8px; }
+    .section-title span { color: #e01010; }
+    .divider { height: 1px; background: linear-gradient(90deg, rgba(220,20,20,0.45), transparent); margin: 20px 0 28px; }
+    .body-text { font-size: 0.97rem; color: rgba(255,255,255,0.62); line-height: 1.85; }
+    .body-text strong { color: #fff; }
+
+    /* Specs strip */
+    .specs-strip { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1px; background: rgba(255,40,40,0.12); border: 1px solid rgba(255,40,40,0.18); border-radius: 12px; overflow: hidden; margin-top: 28px; }
+    .spec-item { background: rgba(12,4,4,0.9); padding: 24px 20px; }
+    .spec-val { font-family: 'Rajdhani', sans-serif; font-size: 1.7rem; font-weight: 700; color: #fff; line-height: 1; }
+    .spec-val span { color: #e01010; }
+    .spec-desc { font-size: 0.74rem; color: rgba(255,255,255,0.38); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.07em; }
+
+    .tag-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+    .tag { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09); color: rgba(255,255,255,0.6); font-size: 0.82rem; padding: 7px 15px; border-radius: 7px; transition: border-color 0.2s, color 0.2s, background 0.2s; }
+    .tag:hover { border-color: rgba(220,20,20,0.5); color: #fff; background: rgba(220,20,20,0.06); }
+
+    .doc-card { display: flex; align-items: flex-start; gap: 18px; background: rgba(220,20,20,0.07); border: 1px solid rgba(220,20,20,0.2); border-radius: 12px; padding: 22px 26px; margin-top: 28px; }
+    .doc-icon { width: 46px; height: 46px; background: rgba(220,20,20,0.14); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .doc-icon svg { width: 22px; height: 22px; color: #e84040; }
+    .doc-body h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 5px; }
+    .doc-body p { font-size: 0.83rem; color: rgba(255,255,255,0.42); line-height: 1.6; }
+
+    /* Range box */
+    .range-box { background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 24px 28px; margin-top: 4px; }
+    .range-box ul { padding-left: 18px; }
+    .range-box li { font-size: 0.95rem; color: rgba(255,255,255,0.62); line-height: 2; }
+    .range-box li strong { color: #fff; }
+
+    .cert-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+    .cert-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 28px 22px; text-align: center; transition: border-color 0.25s, background 0.25s, transform 0.25s; }
+    .cert-card:hover { border-color: rgba(220,20,20,0.38); background: rgba(220,20,20,0.05); transform: translateY(-3px); }
+    .cert-logo { width: 68px; height: 68px; margin: 0 auto 16px; object-fit: contain; opacity: 0.7; filter: brightness(0) invert(0.75); }
+    .cert-name { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .cert-type { font-size: 0.74rem; color: rgba(255,255,255,0.32); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 14px; }
+    .cert-badge { display: inline-block; background: rgba(60,200,100,0.1); border: 1px solid rgba(60,200,100,0.28); color: #55cc88; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 11px; border-radius: 100px; }
+
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 18px; }
+    .project-card { background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #e01010; border-radius: 0 12px 12px 0; padding: 26px 24px; transition: background 0.2s, border-left-width 0.2s, transform 0.2s; }
+    .project-card:hover { background: rgba(220,20,20,0.055); border-left-width: 6px; transform: translateX(2px); }
+    .project-country { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #e84040; margin-bottom: 8px; }
+    .project-title { font-family: 'Rajdhani', sans-serif; font-size: 1.08rem; font-weight: 700; color: #fff; margin-bottom: 16px; line-height: 1.25; }
+    .meta-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 9px; }
+    .meta-row:last-child { margin-bottom: 0; }
+    .meta-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #e84040; min-width: 50px; padding-top: 3px; flex-shrink: 0; }
+    .meta-value { font-size: 0.88rem; color: rgba(255,255,255,0.62); line-height: 1.5; }
+
+    .cta-banner { background: linear-gradient(135deg, rgba(190,12,12,0.18) 0%, rgba(110,5,5,0.08) 100%); border: 1px solid rgba(220,20,20,0.22); border-radius: 16px; padding: 44px 52px; display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap; margin-bottom: 88px; }
+    .cta-text h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.65rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .cta-text p { font-size: 0.9rem; color: rgba(255,255,255,0.45); }
+    .btn-cta { display: inline-flex; align-items: center; gap: 9px; background: linear-gradient(135deg, #cc1010, #e83030); color: #fff; border: none; border-radius: 10px; padding: 14px 34px; font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; text-decoration: none; box-shadow: 0 6px 24px rgba(200,20,20,0.32); transition: transform 0.15s, box-shadow 0.15s; }
+    .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(200,20,20,0.44); }
+    .btn-cta svg { width: 15px; height: 15px; }
+
+    footer { background: #060606; border-top: 1px solid rgba(255,40,40,0.1); padding: 52px 48px 28px; }
+    .footer-top { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 36px; padding-bottom: 36px; border-bottom: 1px solid rgba(255,255,255,0.055); margin-bottom: 26px; }
+    .footer-brand-logo { font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 14px; }
+    .footer-brand-logo span { color: #e01010; }
+    .footer-brand img { width: 144px; opacity: 0.5; filter: brightness(0) invert(1); }
+    .footer-cols { display: flex; gap: 52px; flex-wrap: wrap; }
+    .footer-col h4 { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-bottom: 14px; }
+    .footer-col a { display: block; color: rgba(255,255,255,0.44); text-decoration: none; font-size: 0.86rem; margin-bottom: 9px; transition: color 0.2s; }
+    .footer-col a:hover { color: #fff; }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+    .footer-copy { font-size: 0.75rem; color: rgba(255,255,255,0.2); }
+    .footer-socials { display: flex; gap: 16px; }
+    .footer-socials a { color: rgba(255,255,255,0.28); transition: color 0.2s; display: flex; }
+    .footer-socials a:hover { color: #e84040; }
+    .footer-socials svg { width: 18px; height: 18px; }
+
+    @media (max-width: 768px) {
+      nav { padding: 14px 20px; } nav.scrolled { padding: 10px 20px; }
+      .nav-links { display: none; } .burger { display: flex; }
+      .hero { padding: 0 24px 52px; min-height: 440px; }
+      .page { padding: 52px 24px 0; }
+      .cta-banner { padding: 30px 26px; }
+      footer { padding: 36px 24px 22px; } .footer-top { flex-direction: column; }
+    }
+  </style>
+</head>
+<body onload="initPage()">
+
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">Elsewedy <span>Transformers</span></a>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#products">Products</a>
+      <a href="contact.html">Contact</a>
+      <div class="user-chip" id="user-chip" onclick="logout()" onmouseover="checkHover(true)" onmouseout="checkHover(false)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <span id="fullname"></span>
+      </div>
+      <a href="login.html" class="btn-nav" id="login-btn-nav">Sign In</a>
+    </div>
+    <div class="burger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+  </nav>
+
+  <div class="hero">
+    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span><a href="index.html#products">Products</a><span>/</span>Power Transformers</div>
+    <div class="hero-eyebrow">Up to 750 MVA · 500 kV</div>
+    <h1 class="hero-title">Power<br><span>Transformers</span></h1>
+    <p class="hero-sub">Engineered for transmission substations, generation step-up units, and the most demanding heavy industries worldwide.</p>
+  </div>
+
+  <div class="page">
+
+    <!-- Overview -->
+    <div class="section">
+      <div class="section-label">Overview</div>
+      <h2 class="section-title">Heavy-Duty <span>Performance</span></h2>
+      <div class="divider"></div>
+      <p class="body-text">We produce a wide range of power transformers for <strong>transmission substations</strong> and <strong>generation step-up units</strong>, ideal for heavy industries. Available as auto-transformers, rated for the most demanding electrical environments in the world.</p>
+      <div class="specs-strip">
+        <div class="spec-item"><div class="spec-val">750<span>MVA</span></div><div class="spec-desc">Max Power Rating</div></div>
+        <div class="spec-item"><div class="spec-val">500<span>kV</span></div><div class="spec-desc">Max Voltage</div></div>
+        <div class="spec-item"><div class="spec-val">56<span>+</span></div><div class="spec-desc">Units · single project</div></div>
+        <div class="spec-item"><div class="spec-val">Auto</div><div class="spec-desc">Transformer option</div></div>
+      </div>
+      <div class="tag-list">
+        <span class="tag">Oil &amp; gas refining</span><span class="tag">Chemicals &amp; petrochemicals</span>
+        <span class="tag">Cement</span><span class="tag">Steel</span><span class="tag">Rolling mills</span>
+        <span class="tag">Mining</span><span class="tag">Desalination</span><span class="tag">Pumping stations</span>
+      </div>
+      <div class="doc-card">
+        <div class="doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <div class="doc-body">
+          <h4>Power Transformers — Technical Catalogue</h4>
+          <p>Full specifications covering ratings up to 750 MVA / 500 kV, auto-transformer configurations, factory test reports, dimensional data, and international project references. Contact us to request a copy.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Range -->
+    <div class="section">
+      <div class="section-label">Specifications</div>
+      <h2 class="section-title">Product <span>Range</span></h2>
+      <div class="divider"></div>
+      <div class="range-box">
+        <ul>
+          <li><strong>All ratings up to 750 MVA</strong> &amp; voltage up to <strong>500 kV</strong></li>
+          <li>Auto-transformer variants available across the full rating range</li>
+          <li>Custom-engineered to exact project requirements</li>
+          <li>Full factory testing and FAT (Factory Acceptance Testing) before delivery</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Certifications -->
+    <div class="section">
+      <div class="section-label">Quality Assurance</div>
+      <h2 class="section-title">Product <span>Certifications</span></h2>
+      <div class="divider"></div>
+      <div class="cert-grid">
+        <div class="cert-card"><img src="public/iso-500h.png" alt="ISO" class="cert-logo" onerror="this.style.display='none'"><div class="cert-name">175 MVA</div><div class="cert-type">Type Test Certificate</div><span class="cert-badge">Verified</span></div>
+        <div class="cert-card"><img src="public/iso-500h.png" alt="ISO" class="cert-logo" onerror="this.style.display='none'"><div class="cert-name">250 MVA</div><div class="cert-type">Type Test Certificate</div><span class="cert-badge">Verified</span></div>
+        <div class="cert-card"><img src="public/cesi-500h.png" alt="CESI" class="cert-logo" onerror="this.style.display='none'"><div class="cert-name">CESI — 66 MVA</div><div class="cert-type">Independent Test Certificate</div><span class="cert-badge">Verified</span></div>
+        <div class="cert-card"><img src="public/kema-500h.png" alt="KEMA" class="cert-logo" onerror="this.style.display='none'"><div class="cert-name">KEMA — 40 MVA</div><div class="cert-type">Type Test Certificate</div><span class="cert-badge">Verified</span></div>
+      </div>
+    </div>
+
+    <!-- Projects -->
+    <div class="section">
+      <div class="section-label">Track Record</div>
+      <h2 class="section-title">Featured <span>Projects</span></h2>
+      <div class="divider"></div>
+      <div class="projects-grid">
+        <div class="project-card">
+          <div class="project-country">Egypt</div>
+          <div class="project-title">Transmission Substation — Siemens Technologies SAE</div>
+          <div class="meta-row"><span class="meta-label">Client</span><span class="meta-value">Siemens Technologies SAE</span></div>
+          <div class="meta-row"><span class="meta-label">Scope</span><span class="meta-value">Supply, installation, testing &amp; commissioning — 3 units, 125 MVA, 220/72.5/24 kV</span></div>
+        </div>
+        <div class="project-card">
+          <div class="project-country">Egypt</div>
+          <div class="project-title">National Grid Expansion — EETC</div>
+          <div class="meta-row"><span class="meta-label">Client</span><span class="meta-value">Egyptian Electricity Transmission Company</span></div>
+          <div class="meta-row"><span class="meta-label">Scope</span><span class="meta-value">Supply, installation, testing &amp; commissioning — 56 units, 40 MVA, 66/11 kV</span></div>
+        </div>
+        <div class="project-card">
+          <div class="project-country">Egypt</div>
+          <div class="project-title">Industrial Substation — ABB</div>
+          <div class="meta-row"><span class="meta-label">Client</span><span class="meta-value">ABB</span></div>
+          <div class="meta-row"><span class="meta-label">Scope</span><span class="meta-value">Supply, installation, testing &amp; commissioning — 2 units, 25 MVA, 66/11.86 kV</span></div>
+        </div>
+        <div class="project-card">
+          <div class="project-country">Kuwait</div>
+          <div class="project-title">National Grid Distribution — MEW</div>
+          <div class="meta-row"><span class="meta-label">Client</span><span class="meta-value">Ministry of Electricity &amp; Water (MEW)</span></div>
+          <div class="meta-row"><span class="meta-label">Scope</span><span class="meta-value">Supply, installation, testing &amp; commissioning — 8 units, 30 MVA, 132/11.5 kV</span></div>
+        </div>
+        <div class="project-card">
+          <div class="project-country">Kuwait</div>
+          <div class="project-title">Industrial Power Supply — IMCO</div>
+          <div class="meta-row"><span class="meta-label">Client</span><span class="meta-value">IMCO</span></div>
+          <div class="meta-row"><span class="meta-label">Scope</span><span class="meta-value">Supply, installation, testing &amp; commissioning — 12 units, 30 MVA, 132/11.5 kV</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-banner">
+      <div class="cta-text"><h3>Ready to discuss your project?</h3><p>Our engineering team can design and deliver a solution for any rating or configuration.</p></div>
+      <a href="contact.html" id="contact-button" class="btn-cta">Contact Us <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand"><div class="footer-brand-logo">Elsewedy <span>Transformers</span></div><img src="https://www.elsewedyelectric.com/img/white-logo.png" alt="" onerror="this.style.display='none'"></div>
+      <div class="footer-cols">
+        <div class="footer-col"><h4>Company</h4><a href="#">Investors</a><a href="#">Careers</a><a href="#">Data Privacy</a><a href="#">Cookies Policy</a></div>
+        <div class="footer-col"><h4>Support</h4><a href="#">About Us</a><a href="#">FAQ</a><a href="#">Terms &amp; Conditions</a><a href="contact.html">Contact</a></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2024 Elsewedy Transformers. All rights reserved.</div>
+      <div class="footer-socials">
+        <a href="https://instagram.com" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+        <a href="https://facebook.com" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+        <a href="https://twitter.com" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l16 16M4 20 20 4"/></svg></a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function initPage(){const n=localStorage.getItem('logInuserName');const c=document.getElementById('user-chip');const b=document.getElementById('login-btn-nav');const e=document.getElementById('fullname');if(n){c.style.display='flex';b.style.display='none';e.textContent=n;}else{c.style.display='none';b.style.display='inline-flex';}}
+    function changeName(){initPage();}
+    function checkHover(h){const e=document.getElementById('fullname');if(e)e.textContent=h?'Logout':(localStorage.getItem('logInuserName')||'');}
+    function logout(){localStorage.removeItem('logInuser');localStorage.removeItem('logInuserName');window.location.href='login.html';}
+    window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>40));
+    function toggleMobileMenu(){const l=document.getElementById('nav-links');const o=l.style.display==='flex';l.style.cssText=o?'':'display:flex;flex-direction:column;position:fixed;top:54px;left:0;right:0;background:rgba(8,8,8,0.98);padding:24px;gap:20px;border-bottom:1px solid rgba(255,40,40,0.15);z-index:99;backdrop-filter:blur(16px)';}
+  </script>
+</body>
+</html>

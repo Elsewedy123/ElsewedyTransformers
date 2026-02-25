@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Contact - Elsewedy Transformers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #0a0a0a;
+      color: #f0f0f0;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ─── Navbar (identical to index.html) ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 48px;
+      background: rgba(8,8,8,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,40,40,0.12);
+      transition: padding 0.3s;
+    }
+    nav.scrolled { padding: 12px 48px; }
+    .nav-logo { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: #fff; letter-spacing: 0.05em; text-decoration: none; }
+    .nav-logo span { color: #e01010; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a {
+      color: rgba(255,255,255,0.65); text-decoration: none; font-size: 0.88rem;
+      font-weight: 500; letter-spacing: 0.04em; transition: color 0.2s;
+      position: relative; padding-bottom: 3px;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -1px; left: 0; right: 100%;
+      height: 2px; background: #e01010; transition: right 0.25s ease;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a:hover::after, .nav-links a.active::after { right: 0; }
+    .nav-links a.active { color: #fff; }
+
+    .user-chip {
+      display: none; align-items: center; gap: 8px;
+      background: rgba(220,20,20,0.12); border: 1px solid rgba(220,20,20,0.3);
+      border-radius: 100px; padding: 6px 14px 6px 10px;
+      font-size: 0.82rem; color: rgba(255,255,255,0.75);
+      cursor: pointer; transition: background 0.2s, color 0.2s;
+    }
+    .user-chip:hover { background: rgba(220,20,20,0.25); color: #fff; }
+    .user-chip svg { width: 15px; height: 15px; }
+
+    .btn-nav {
+      background: linear-gradient(135deg, #bb0d0d, #e02020);
+      color: #fff; border: none; border-radius: 8px;
+      padding: 9px 22px; font-family: 'Rajdhani', sans-serif;
+      font-size: 0.9rem; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; cursor: pointer; text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 3px 14px rgba(200,20,20,0.3);
+    }
+    .btn-nav:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(200,20,20,0.4); }
+
+    .burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .burger span { display: block; width: 22px; height: 2px; background: #fff; border-radius: 2px; transition: 0.3s; }
+
+    /* ─── Page Hero ─── */
+    .page-hero {
+      padding: 160px 48px 80px;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 50%, rgba(10,10,10,1) 100%),
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(180,10,10,0.18) 0%, transparent 70%);
+      text-align: center;
+      position: relative;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 80px,
+        rgba(255,40,40,0.02) 80px,
+        rgba(255,40,40,0.02) 81px
+      );
+      pointer-events: none;
+    }
+    .page-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(220,20,20,0.12); border: 1px solid rgba(220,20,20,0.35);
+      color: #e84040; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em;
+      text-transform: uppercase; padding: 5px 14px; border-radius: 100px;
+      margin-bottom: 20px;
+      animation: fadeUp 0.6s 0.1s both;
+    }
+    .page-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #e84040; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .page-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 700; line-height: 1;
+      color: #fff; letter-spacing: -0.01em;
+      margin-bottom: 20px;
+      animation: fadeUp 0.6s 0.2s both;
+    }
+    .page-title span { color: #e01010; }
+
+    .page-sub {
+      font-size: 1rem; color: rgba(255,255,255,0.5); max-width: 480px; margin: 0 auto;
+      line-height: 1.7;
+      animation: fadeUp 0.6s 0.3s both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── Contact Section ─── */
+    .contact-section {
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 48px 96px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      animation: fadeUp 0.7s 0.4s both;
+    }
+
+    /* Left: Form */
+    .contact-form-wrap { }
+
+    .form-label {
+      display: block;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(255,255,255,0.4);
+      margin-bottom: 8px;
+    }
+
+    .form-group { margin-bottom: 24px; }
+
+    .form-input, .form-textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 14px 18px;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .form-input::placeholder, .form-textarea::placeholder {
+      color: rgba(255,255,255,0.2);
+    }
+    .form-input:focus, .form-textarea:focus {
+      border-color: rgba(220,20,20,0.5);
+      background: rgba(220,20,20,0.04);
+      box-shadow: 0 0 0 3px rgba(220,20,20,0.08);
+    }
+    .form-input.error, .form-textarea.error {
+      border-color: rgba(220,20,20,0.7);
+      background: rgba(220,20,20,0.06);
+    }
+    .form-textarea {
+      height: 160px; resize: vertical; min-height: 120px;
+    }
+
+    .field-error {
+      font-size: 0.78rem; color: #e84040;
+      margin-top: 6px; display: none;
+    }
+    .field-error.show { display: block; }
+
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #cc1010, #e83030);
+      color: #fff; border: none; border-radius: 10px;
+      padding: 16px 32px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(200,20,20,0.3);
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(200,20,20,0.45); }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ─── Success State ─── */
+    .success-state {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 48px 0;
+      gap: 20px;
+    }
+    .success-state.show { display: flex; }
+    .success-icon {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: rgba(220,20,20,0.12);
+      border: 2px solid rgba(220,20,20,0.4);
+      display: flex; align-items: center; justify-content: center;
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    .success-icon svg { width: 32px; height: 32px; color: #e84040; }
+    .success-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.8rem; font-weight: 700; color: #fff;
+    }
+    .success-sub { font-size: 0.95rem; color: rgba(255,255,255,0.45); line-height: 1.6; max-width: 300px; }
+    .btn-send-another {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: #e84040; font-size: 0.85rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      cursor: pointer; background: none; border: none;
+      transition: gap 0.2s, color 0.2s;
+    }
+    .btn-send-another:hover { color: #ff6060; gap: 10px; }
+
+    /* Right: Info panel */
+    .contact-info {
+      padding-top: 8px;
+      border-left: 1px solid rgba(255,40,40,0.1);
+      padding-left: 64px;
+    }
+    .info-block { margin-bottom: 40px; }
+    .info-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #e84040; margin-bottom: 10px;
+    }
+    .info-value {
+      font-size: 0.92rem; color: rgba(255,255,255,0.6); line-height: 1.75;
+    }
+    .info-value strong { color: #fff; font-weight: 500; }
+
+    .info-divider {
+      height: 1px; background: rgba(255,40,40,0.08); margin: 32px 0;
+    }
+
+    /* ─── Footer (identical to index.html) ─── */
+    footer {
+      background: #060606;
+      border-top: 1px solid rgba(255,40,40,0.1);
+      padding: 56px 48px 32px;
+    }
+    .footer-top {
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px;
+      padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 32px;
+    }
+    .footer-brand { max-width: 280px; }
+    .footer-brand-logo { font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 12px; }
+    .footer-brand-logo span { color: #e01010; }
+    .footer-brand p { font-size: 0.85rem; color: rgba(255,255,255,0.35); line-height: 1.7; }
+    .footer-brand img { width: 160px; margin-top: 20px; opacity: 0.6; filter: brightness(0) invert(1); }
+    .footer-cols { display: flex; gap: 60px; flex-wrap: wrap; }
+    .footer-col h4 { font-family: 'Rajdhani', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 16px; }
+    .footer-col a { display: block; color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.88rem; margin-bottom: 10px; transition: color 0.2s; }
+    .footer-col a:hover { color: #fff; }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .footer-copy { font-size: 0.78rem; color: rgba(255,255,255,0.25); }
+    .footer-socials { display: flex; gap: 16px; }
+    .footer-socials a { color: rgba(255,255,255,0.3); transition: color 0.2s; }
+    .footer-socials a:hover { color: #e84040; }
+    .footer-socials svg { width: 18px; height: 18px; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 900px) {
+      .contact-section { grid-template-columns: 1fr; gap: 40px; }
+      .contact-info { border-left: none; padding-left: 0; border-top: 1px solid rgba(255,40,40,0.1); padding-top: 40px; }
+    }
+    @media (max-width: 700px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .burger { display: flex; }
+      .page-hero { padding: 120px 24px 60px; }
+      .contact-section { padding: 0 24px 60px; }
+      footer { padding: 40px 24px 24px; }
+      .footer-top { flex-direction: column; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body onload="initPage()">
+
+  <!-- ─── Navbar ─── -->
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">Elsewedy <span>Transformers</span></a>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#products">Products</a>
+      <a href="contact.html" class="active">Contact</a>
+      <div class="user-chip" id="user-chip" onclick="logout()" title="Click to logout" onmouseover="checkHover(true)" onmouseout="checkHover(false)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+        <span id="fullname"></span>
+      </div>
+      <a href="login.html" class="btn-nav" id="login-btn-nav">Sign In</a>
+    </div>
+    <div class="burger" id="burger" onclick="toggleMobileMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- ─── Page Hero ─── -->
+  <div class="page-hero">
+    <div class="page-eyebrow">Get In Touch</div>
+    <h1 class="page-title">Contact <span>Us</span></h1>
+    <p class="page-sub">Have a question or project in mind? Send us a message and our team will get back to you shortly.</p>
+  </div>
+
+  <!-- ─── Contact Layout ─── -->
+  <div class="contact-section">
+
+    <!-- Form -->
+    <div class="contact-form-wrap">
+
+      <!-- The form itself -->
+      <div id="form-view">
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <input type="email" id="email" class="form-input" placeholder="you@example.com" autocomplete="email" />
+          <div class="field-error" id="email-error">Please enter a valid email address.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="message">Your Message</label>
+          <textarea id="message" class="form-textarea" placeholder="How can we help you?"></textarea>
+          <div class="field-error" id="message-error">Please enter a message before sending.</div>
+        </div>
+
+        <button class="btn-submit" id="submit-btn" onclick="handleSubmit()">
+          Send Message
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+            <path d="m22 2-7 20-4-9-9-4 20-7z"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Success state -->
+      <div class="success-state" id="success-view">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M20 6 9 17l-5-5"/>
+          </svg>
+        </div>
+        <div class="success-title">Message Sent!</div>
+        <div class="success-sub">Thank you for reaching out. We'll be in touch within 1–2 business days.</div>
+        <button class="btn-send-another" onclick="resetForm()">
+          Send another
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12">
+            <path d="m9 18 6-6-6-6"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Info panel -->
+    <div class="contact-info">
+      <div class="info-block">
+        <div class="info-label">Head Office</div>
+        <div class="info-value">
+          Plot No. 13co3, Cairo Festival City<br>
+          5th Settlement, Cairo, Egypt<br>
+          <strong>P.O.Box 310, New Cairo 11835</strong>
+        </div>
+      </div>
+
+      <div class="info-divider"></div>
+
+      <div class="info-block">
+        <div class="info-label">Phone</div>
+        <div class="info-value">
+          <strong>(+202) 286 10 800–965</strong>
+        </div>
+      </div>
+
+      <div class="info-block">
+        <div class="info-label">Fax</div>
+        <div class="info-value">
+          <strong>(+202) 296 10 942</strong>
+        </div>
+      </div>
+
+      <div class="info-block">
+        <div class="info-label">Email</div>
+        <div class="info-value">
+          <strong>info@elsewedytransformers.com</strong>
+        </div>
+      </div>
+
+      <div class="info-block">
+        <div class="info-label">Customer Care</div>
+        <div class="info-value">
+          <strong>19261</strong>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ─── Footer ─── -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-brand-logo">Elsewedy <span>Transformers</span></div>
+        <p>Delivering world-class transformer solutions with unmatched quality, precision, and global reach.</p>
+        <img src="https://www.elsewedyelectric.com/img/white-logo.png" alt="Elsewedy Electric" onerror="this.style.display='none'">
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">Investors</a>
+          <a href="#">Careers</a>
+          <a href="#">Data Privacy</a>
+          <a href="#">Cookies Policy</a>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <a href="#">About Us</a>
+          <a href="#">FAQ</a>
+          <a href="#">Terms &amp; Conditions</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2024 Elsewedy Transformers. All rights reserved.</div>
+      <div class="footer-socials">
+        <a href="https://instagram.com" target="_blank" rel="noreferrer" title="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+        </a>
+        <a href="https://facebook.com" target="_blank" rel="noreferrer" title="Facebook">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+          </svg>
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noreferrer" title="Twitter / X">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 4l16 16M4 20 20 4"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Auth ── */
+    function initPage() {
+      const name = localStorage.getItem('logInuserName');
+      const chip = document.getElementById('user-chip');
+      const loginBtn = document.getElementById('login-btn-nav');
+      const nameEl = document.getElementById('fullname');
+      if (name) {
+        chip.style.display = 'flex';
+        loginBtn.style.display = 'none';
+        nameEl.textContent = name;
+      } else {
+        chip.style.display = 'none';
+        loginBtn.style.display = 'inline-flex';
+      }
+    }
+
+    function checkHover(isHovered) {
+      const nameEl = document.getElementById('fullname');
+      if (!nameEl) return;
+      nameEl.textContent = isHovered ? 'Logout' : (localStorage.getItem('logInuserName') || '');
+    }
+
+    function logout() {
+      localStorage.removeItem('logInuser');
+      localStorage.removeItem('logInuserName');
+      window.location.href = 'login.html';
+    }
+
+    /* ── Navbar scroll ── */
+    window.addEventListener('scroll', function () {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    /* ── Mobile menu ── */
+    function toggleMobileMenu() {
+      const links = document.getElementById('nav-links');
+      const isOpen = links.style.display === 'flex';
+      links.style.cssText = isOpen
+        ? ''
+        : 'display:flex;flex-direction:column;position:fixed;top:56px;left:0;right:0;background:rgba(8,8,8,0.98);padding:24px 24px 32px;gap:20px;border-bottom:1px solid rgba(255,40,40,0.15);z-index:99;backdrop-filter:blur(16px)';
+    }
+
+    /* ── Form validation & submit ── */
+    function handleSubmit() {
+      const emailInput   = document.getElementById('email');
+      const messageInput = document.getElementById('message');
+      const emailError   = document.getElementById('email-error');
+      const messageError = document.getElementById('message-error');
+
+      let valid = true;
+
+      // Reset errors
+      emailInput.classList.remove('error');
+      messageInput.classList.remove('error');
+      emailError.classList.remove('show');
+      messageError.classList.remove('show');
+
+      // Validate email
+      const emailVal = emailInput.value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailVal || !emailRegex.test(emailVal)) {
+        emailInput.classList.add('error');
+        emailError.classList.add('show');
+        valid = false;
+      }
+
+      // Validate message
+      const messageVal = messageInput.value.trim();
+      if (!messageVal) {
+        messageInput.classList.add('error');
+        messageError.classList.add('show');
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      // Disable button, simulate send
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+
+      // Simulate async send (replace with real Email.send() call if needed)
+      setTimeout(function () {
+        document.getElementById('form-view').style.display = 'none';
+        document.getElementById('success-view').classList.add('show');
+      }, 800);
+    }
+
+    function resetForm() {
+      document.getElementById('email').value = '';
+      document.getElementById('message').value = '';
+      document.getElementById('email').classList.remove('error');
+      document.getElementById('message').classList.remove('error');
+      document.getElementById('email-error').classList.remove('show');
+      document.getElementById('message-error').classList.remove('show');
+
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = false;
+      btn.innerHTML = 'Send Message <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg>';
+
+      document.getElementById('form-view').style.display = '';
+      document.getElementById('success-view').classList.remove('show');
+    }
+  </script>
+</body>
+</html>

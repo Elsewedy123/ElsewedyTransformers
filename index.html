@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Transformers - Elsewedy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #0a0a0a;
+      color: #f0f0f0;
+      overflow-x: hidden;
+    }
+
+    /* ─── Navbar ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 48px;
+      background: rgba(8,8,8,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,40,40,0.12);
+      transition: padding 0.3s;
+    }
+    nav.scrolled { padding: 12px 48px; }
+    .nav-logo { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: #fff; letter-spacing: 0.05em; text-decoration: none; }
+    .nav-logo span { color: #e01010; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a {
+      color: rgba(255,255,255,0.65); text-decoration: none; font-size: 0.88rem;
+      font-weight: 500; letter-spacing: 0.04em; transition: color 0.2s;
+      position: relative; padding-bottom: 3px;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -1px; left: 0; right: 100%;
+      height: 2px; background: #e01010; transition: right 0.25s ease;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a:hover::after { right: 0; }
+
+    /* User name / logout chip */
+    .user-chip {
+      display: none;
+      align-items: center; gap: 8px;
+      background: rgba(220,20,20,0.12);
+      border: 1px solid rgba(220,20,20,0.3);
+      border-radius: 100px; padding: 6px 14px 6px 10px;
+      font-size: 0.82rem; color: rgba(255,255,255,0.75);
+      cursor: pointer; transition: background 0.2s, color 0.2s;
+    }
+    .user-chip:hover { background: rgba(220,20,20,0.25); color: #fff; }
+    .user-chip svg { width: 15px; height: 15px; }
+    #user-label { font-weight: 600; }
+
+    .btn-nav {
+      background: linear-gradient(135deg, #bb0d0d, #e02020);
+      color: #fff; border: none; border-radius: 8px;
+      padding: 9px 22px; font-family: 'Rajdhani', sans-serif;
+      font-size: 0.9rem; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; cursor: pointer; text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 3px 14px rgba(200,20,20,0.3);
+    }
+    .btn-nav:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(200,20,20,0.4); }
+
+    /* Burger */
+    .burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .burger span { display: block; width: 22px; height: 2px; background: #fff; border-radius: 2px; transition: 0.3s; }
+
+    /* ─── Hero ─── */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 120px 48px 80px;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.5) 60%, rgba(10,10,10,1) 100%),
+        url('public/transformers_main-hall_1-1500w.jpg') center/cover no-repeat;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 100% 50%, rgba(180,10,10,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(220,20,20,0.12); border: 1px solid rgba(220,20,20,0.35);
+      color: #e84040; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em;
+      text-transform: uppercase; padding: 5px 14px; border-radius: 100px;
+      width: fit-content; margin-bottom: 24px;
+      animation: fadeUp 0.7s 0.1s both;
+    }
+    .hero-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #e84040; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .hero-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(3.2rem, 7vw, 6rem);
+      font-weight: 700; line-height: 0.95;
+      color: #fff; letter-spacing: -0.01em;
+      margin-bottom: 28px;
+      animation: fadeUp 0.7s 0.2s both;
+    }
+    .hero-title .accent { color: #e01010; display: block; }
+
+    .hero-sub {
+      max-width: 520px; font-size: 1.05rem; font-weight: 400;
+      color: rgba(255,255,255,0.6); line-height: 1.65;
+      margin-bottom: 40px;
+      animation: fadeUp 0.7s 0.3s both;
+    }
+
+    .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; animation: fadeUp 0.7s 0.4s both; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, #cc1010, #e83030);
+      color: #fff; border: none; border-radius: 10px;
+      padding: 14px 32px; font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+      cursor: pointer; text-decoration: none;
+      box-shadow: 0 6px 24px rgba(200,20,20,0.35);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(200,20,20,0.45); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.15); border-radius: 10px;
+      padding: 14px 32px; font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+      cursor: pointer; text-decoration: none;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.3); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      color: rgba(255,255,255,0.3); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+      animation: fadeUp 1s 1s both;
+    }
+    .scroll-hint svg { width: 18px; height: 18px; animation: bounce 1.8s infinite; }
+    @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+
+    /* ─── Stats section ─── */
+    .section-stats {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      background: #0e0505;
+      border-top: 1px solid rgba(255,40,40,0.12);
+      border-bottom: 1px solid rgba(255,40,40,0.12);
+    }
+    .stat-item {
+      padding: 40px 24px; text-align: center;
+      border-right: 1px solid rgba(255,40,40,0.08);
+      transition: background 0.3s;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-item:hover { background: rgba(220,20,20,0.05); }
+    .stat-num {
+      font-family: 'Rajdhani', sans-serif; font-size: 2.8rem; font-weight: 700;
+      color: #fff; line-height: 1;
+    }
+    .stat-num span { color: #e01010; }
+    .stat-label {
+      font-size: 0.82rem; color: rgba(255,255,255,0.4);
+      letter-spacing: 0.08em; text-transform: uppercase; margin-top: 8px;
+    }
+    .stat-img { width: 50px; margin: 0 auto 12px; opacity: 0.7; filter: brightness(0) invert(1); }
+
+    /* ─── Products section ─── */
+    .section { padding: 96px 48px; }
+    .section-header { margin-bottom: 56px; }
+    .section-eyebrow {
+      display: inline-block; color: #e84040; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Rajdhani', sans-serif; font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700; color: #fff; line-height: 1.1;
+    }
+    .section-title span { color: #e01010; }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px; max-width: 1200px; margin: 0 auto;
+    }
+    .product-card {
+      position: relative; border-radius: 12px; overflow: hidden;
+      background: #111; border: 1px solid rgba(255,255,255,0.06);
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+      cursor: pointer;
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(220,20,20,0.4);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(220,20,20,0.15);
+    }
+    .product-card img { width: 100%; height: 220px; object-fit: cover; display: block; filter: brightness(0.85); transition: filter 0.3s, transform 0.3s; }
+    .product-card:hover img { filter: brightness(1); transform: scale(1.03); }
+    .product-card-inner { padding: 20px 20px 22px; }
+    .product-card-title { font-size: 1rem; font-weight: 600; color: #fff; margin-bottom: 12px; line-height: 1.3; }
+    .btn-discover {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: #e84040; font-size: 0.82rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+      transition: gap 0.2s, color 0.2s;
+    }
+    .btn-discover svg { width: 14px; height: 14px; transition: transform 0.2s; }
+    .btn-discover:hover { color: #ff6060; gap: 10px; }
+    .btn-discover:hover svg { transform: translateX(3px); }
+
+    /* ─── Footer ─── */
+    footer {
+      background: #060606;
+      border-top: 1px solid rgba(255,40,40,0.1);
+      padding: 56px 48px 32px;
+    }
+    .footer-top {
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px;
+      padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 32px;
+    }
+    .footer-brand { max-width: 280px; }
+    .footer-brand-logo { font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 12px; }
+    .footer-brand-logo span { color: #e01010; }
+    .footer-brand p { font-size: 0.85rem; color: rgba(255,255,255,0.35); line-height: 1.7; }
+    .footer-brand img { width: 160px; margin-top: 20px; opacity: 0.6; filter: brightness(0) invert(1); }
+
+    .footer-cols { display: flex; gap: 60px; flex-wrap: wrap; }
+    .footer-col h4 { font-family: 'Rajdhani', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 16px; }
+    .footer-col a { display: block; color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.88rem; margin-bottom: 10px; transition: color 0.2s; }
+    .footer-col a:hover { color: #fff; }
+
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .footer-copy { font-size: 0.78rem; color: rgba(255,255,255,0.25); }
+    .footer-socials { display: flex; gap: 16px; }
+    .footer-socials a { color: rgba(255,255,255,0.3); transition: color 0.2s; }
+    .footer-socials a:hover { color: #e84040; }
+    .footer-socials svg { width: 18px; height: 18px; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 900px) {
+      .section-stats { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 700px) {
+      nav { padding: 14px 20px; }
+      nav.scrolled { padding: 10px 20px; }
+      .nav-links { display: none; }
+      .burger { display: flex; }
+      .hero { padding: 100px 24px 60px; }
+      .section { padding: 60px 24px; }
+      footer { padding: 40px 24px 24px; }
+      .footer-top { flex-direction: column; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .section-stats { grid-template-columns: repeat(2,1fr); }
+      .stat-item { padding: 28px 12px; }
+      .stat-num { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body onload="initPage()">
+
+  <!-- ─── Navbar ─── -->
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">Elsewedy <span>Transformers</span></a>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="#products">Products</a>
+      <a href="contact.html">Contact</a>
+      <!-- User chip shown when logged in -->
+      <div class="user-chip" id="user-chip" onclick="logout()" title="Click to logout" onmouseover="checkHover(true)" onmouseout="checkHover(false)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+        <span id="fullname"></span>
+      </div>
+      <!-- Login button shown when NOT logged in -->
+      <a href="login.html" class="btn-nav" id="login-btn-nav">Sign In</a>
+    </div>
+    <div class="burger" id="burger" onclick="toggleMobileMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- ─── Hero ─── -->
+  <section class="hero">
+    <div class="hero-eyebrow">Engineering Excellence Since 2004</div>
+    <h1 class="hero-title">
+      Power the<br>
+      <span class="accent">Future</span>
+    </h1>
+    <p class="hero-sub">
+      Our transformers are competitively priced and backed by rigorous quality control and testing — trusted by industries across the globe.
+    </p>
+    <div class="hero-ctas">
+      <a href="#products" class="btn-primary" id="explore1-button">
+        Explore Products
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <a href="contact.html" class="btn-secondary">
+        Contact Us
+      </a>
+    </div>
+    <div class="scroll-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      Scroll
+    </div>
+  </section>
+
+  <!-- ─── Stats ─── -->
+  <div class="section-stats" id="main-section">
+    <div class="stat-item">
+      <img src="public/external/97-400h-300h.png" alt="" class="stat-img" onerror="this.style.display='none'">
+      <div class="stat-num">20<span>+</span></div>
+      <div class="stat-label">Years of Production</div>
+    </div>
+    <div class="stat-item">
+      <img src="public/114-300h.png" alt="" class="stat-img" onerror="this.style.display='none'">
+      <div class="stat-num">2,000<span>+</span></div>
+      <div class="stat-label">Employees</div>
+    </div>
+    <div class="stat-item">
+      <img src="public/0002-300h.png" alt="" class="stat-img" onerror="this.style.display='none'">
+      <div class="stat-num">10</div>
+      <div class="stat-label">Factories</div>
+    </div>
+    <div class="stat-item">
+      <img src="public/94-300h.png" alt="" class="stat-img" onerror="this.style.display='none'">
+      <div class="stat-num">750<span>MVA</span></div>
+      <div class="stat-label">Biggest Power Transformer</div>
+    </div>
+  </div>
+
+  <!-- ─── Products ─── -->
+  <section class="section" id="products">
+    <div class="section-header">
+      <span class="section-eyebrow">Our Portfolio</span>
+      <h2 class="section-title">Our <span>Products</span></h2>
+    </div>
+    <div class="products-grid">
+      <div class="product-card">
+        <img src="public/cast-resin-dry-transformers-300h.png" alt="Cast Resin Dry Transformers" onerror="this.style.background='#1a0505';this.style.height='220px'">
+        <div class="product-card-inner">
+          <div class="product-card-title">Cast Resin Dry Transformers</div>
+          <a href="cast.html" class="btn-discover" id="discover1-button">
+            Discover
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="product-card">
+        <img src="public/power-300h.png" alt="Power Transformers" onerror="this.style.background='#1a0505';this.style.height='220px'">
+        <div class="product-card-inner">
+          <div class="product-card-title">Power Transformers</div>
+          <a href="power.html" class="btn-discover" id="discover2-button">
+            Discover
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="product-card">
+        <img src="public/installation-maintenance-300h.jpg" alt="Installation & Maintenance" onerror="this.style.background='#1a0505';this.style.height='220px'">
+        <div class="product-card-inner">
+          <div class="product-card-title">Installation &amp; Maintenance</div>
+          <a href="install.html" class="btn-discover" id="discover3-button">
+            Discover
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="product-card">
+        <img src="public/package-substation-300h.png" alt="Package Substation" onerror="this.style.background='#1a0505';this.style.height='220px'">
+        <div class="product-card-inner">
+          <div class="product-card-title">Package Substation</div>
+          <a href="#" class="btn-discover" id="discover4-button">
+            Discover
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Footer ─── -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-brand-logo">Elsewedy <span>Transformers</span></div>
+        <p>Delivering world-class transformer solutions with unmatched quality, precision, and global reach.</p>
+        <img src="https://www.elsewedyelectric.com/img/white-logo.png" alt="Elsewedy Electric" onerror="this.style.display='none'">
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">Investors</a>
+          <a href="#">Careers</a>
+          <a href="#">Data Privacy</a>
+          <a href="#">Cookies Policy</a>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <a href="#">About Us</a>
+          <a href="#">FAQ</a>
+          <a href="#">Terms &amp; Conditions</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2024 Elsewedy Transformers. All rights reserved.</div>
+      <div class="footer-socials">
+        <a href="https://instagram.com" target="_blank" rel="noreferrer" title="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+        </a>
+        <a href="https://facebook.com" target="_blank" rel="noreferrer" title="Facebook">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+          </svg>
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noreferrer" title="Twitter / X">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 4l16 16M4 20 20 4"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Init: show logged-in user or login button ── */
+    function initPage() {
+      const name = localStorage.getItem('logInuserName');
+      const chip = document.getElementById('user-chip');
+      const loginBtn = document.getElementById('login-btn-nav');
+      const nameEl = document.getElementById('fullname');
+
+      if (name) {
+        chip.style.display = 'flex';
+        loginBtn.style.display = 'none';
+        nameEl.textContent = name;
+      } else {
+        chip.style.display = 'none';
+        loginBtn.style.display = 'inline-flex';
+      }
+    }
+
+    /* Preserve old script.js compatibility */
+    function changeName() { initPage(); }
+
+    function checkHover(isHovered) {
+      const nameEl = document.getElementById('fullname');
+      if (!nameEl) return;
+      nameEl.textContent = isHovered ? 'Logout' : (localStorage.getItem('logInuserName') || '');
+    }
+
+    function logout() {
+      localStorage.removeItem('logInuser');
+      localStorage.removeItem('logInuserName');
+      window.location.href = 'login.html';
+    }
+
+    /* ── Navbar scroll effect ── */
+    window.addEventListener('scroll', function() {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    /* ── Mobile menu ── */
+    function toggleMobileMenu() {
+      const links = document.getElementById('nav-links');
+      const isOpen = links.style.display === 'flex';
+      links.style.cssText = isOpen
+        ? ''
+        : 'display:flex;flex-direction:column;position:fixed;top:56px;left:0;right:0;background:rgba(8,8,8,0.98);padding:24px 24px 32px;gap:20px;border-bottom:1px solid rgba(255,40,40,0.15);z-index:99;backdrop-filter:blur(16px)';
+    }
+
+    /* Close mobile menu on link click */
+    document.querySelectorAll('#nav-links a').forEach(a => {
+      a.addEventListener('click', () => {
+        const links = document.getElementById('nav-links');
+        if (window.innerWidth <= 700) links.style.cssText = '';
+      });
+    });
+  </script>
+</body>
+</html>
