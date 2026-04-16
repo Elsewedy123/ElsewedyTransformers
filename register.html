@@ -588,11 +588,11 @@
     function validatePassword() {
       const val = document.getElementById('password').value;
       if (!val) { showMsg('password', 'Password is required', 'error'); return false; }
-      if (val.length < 8) { showMsg('password', 'Password must be at least 8 characters', 'error'); return false; }
+      if (val.length < 8) { showMsg('password', 'Email is required', 'error'); return false; }
       if (!/[A-Z]/.test(val)) { showMsg('password', 'Add at least one uppercase letter', 'error'); return false; }
       if (!/[a-z]/.test(val)) { showMsg('password', 'Add at least one lowercase letter', 'error'); return false; }
       if (!/\d/.test(val)) { showMsg('password', 'Add at least one number', 'error'); return false; }
-      if (!/[!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~`-]/.test(val)) { showMsg('password', 'Add at least one special character', 'error'); return false; }
+      if (!/[!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~`-]/.test(val)) { showMsg('password', 'Password is weak', 'error'); return false; }
       showMsg('password', 'Strong password', 'success'); return true;
     }
     function validateCPassword() {
